@@ -23,6 +23,7 @@ import (
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	ackcfg "github.com/aws-controllers-k8s/runtime/pkg/config"
 	ackmetrics "github.com/aws-controllers-k8s/runtime/pkg/metrics"
+	awssdkv2 "github.com/aws/aws-sdk-go-v2/aws"
 )
 
 // AWSResourceManager is responsible for providing a consistent way to perform
@@ -106,6 +107,7 @@ type AWSResourceManagerFactory interface {
 		*session.Session,
 		ackv1alpha1.AWSAccountID,
 		ackv1alpha1.AWSRegion,
+		awssdkv2.Config,
 	) (AWSResourceManager, error)
 	// IsAdoptable returns true if the resource is able to be adopted
 	IsAdoptable() bool

@@ -42,6 +42,8 @@ import (
 	ackrtcache "github.com/aws-controllers-k8s/runtime/pkg/runtime/cache"
 	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
 	acktypes "github.com/aws-controllers-k8s/runtime/pkg/types"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	svcsdkV2 "github.com/aws/aws-sdk-go-v2/config"
 )
 
 const (
@@ -213,6 +215,9 @@ func (r *resourceReconciler) Reconcile(ctx context.Context, req ctrlrt.Request) 
 		}
 	}
 	region := r.getRegion(desired)
+	// Config will be used to create client for AWS SDK v2
+	config := r.getsdkV2Config()
+
 	endpointURL := r.getEndpointURL(desired)
 	gvk := r.rd.GroupVersionKind()
 	// New session will only pivot to the roleARN if it is not empty.
@@ -228,8 +233,7 @@ func (r *resourceReconciler) Reconcile(ctx context.Context, req ctrlrt.Request) 
 	)
 
 	rm, err := r.rmf.ManagerFor(
-		r.cfg, r.log, r.metrics, r, sess, acctID, region,
-	)
+		r.cfg, r.log, r.metrics, r, sess, acctID, region, config)
 	if err != nil {
 		return ctrlrt.Result{}, err
 	}
@@ -1096,6 +1100,15 @@ func (r *resourceReconciler) getRegion(
 
 	// use controller configuration region
 	return ackv1alpha1.AWSRegion(r.cfg.Region)
+}
+
+func (r *resourceReconciler) getsdkV2Config() aws.Config {
+	config, err := svcsdkV2.LoadDefaultConfig(context.Background(), svcsdkV2.WithRegion(r.cfg.Region))
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Unable to create config for AWS SDK V2")
+	}
+	return config
 }
 
 // getDeletionPolicy returns the resource's deletion policy based on the default
