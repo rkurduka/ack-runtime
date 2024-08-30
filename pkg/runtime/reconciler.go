@@ -216,6 +216,7 @@ func (r *resourceReconciler) Reconcile(ctx context.Context, req ctrlrt.Request) 
 	}
 	region := r.getRegion(desired)
 	// Config will be used to create client for AWS SDK v2
+	// This is for AWS-SDK-GO-V2
 	config := r.getsdkV2Config()
 
 	endpointURL := r.getEndpointURL(desired)
@@ -1102,6 +1103,7 @@ func (r *resourceReconciler) getRegion(
 	return ackv1alpha1.AWSRegion(r.cfg.Region)
 }
 
+// This is for AWS-SDK-GO-V2
 func (r *resourceReconciler) getsdkV2Config() aws.Config {
 	config, err := svcsdkV2.LoadDefaultConfig(context.Background(), svcsdkV2.WithRegion(r.cfg.Region))
 	if err != nil {

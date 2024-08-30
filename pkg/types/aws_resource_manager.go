@@ -91,6 +91,7 @@ type AWSResourceManager interface {
 // AWSResourceManagerFactory returns an AWSResourceManager that can be used to
 // manage AWS resources for a particular AWS account
 // TODO(jaypipes): Move AWSResourceManagerFactory into its own file
+// This is for AWS-SDK-GO-V2 - ADDED Config as parameter for ManageFor method
 type AWSResourceManagerFactory interface {
 	// ResourceDescriptor returns an AWSResourceDescriptor that can be used by
 	// the upstream controller-runtime to introspect the CRs that the resource
